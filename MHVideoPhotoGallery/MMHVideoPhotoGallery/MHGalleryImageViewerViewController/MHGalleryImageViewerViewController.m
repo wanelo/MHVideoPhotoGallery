@@ -120,17 +120,9 @@
     self.pageViewController.delegate = self;
     self.pageViewController.dataSource = self;
     self.pageViewController.automaticallyAdjustsScrollViewInsets =NO;
-    
-    MHGalleryItem *item = [self itemForIndex:self.pageIndex];
-    
-    MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:item viewController:self];
-    imageViewController.pageIndex = self.pageIndex;
-    [self.pageViewController setViewControllers:@[imageViewController]
-                                      direction:UIPageViewControllerNavigationDirectionForward
-                                       animated:NO
-                                     completion:nil];
-    
-    
+
+    MHGalleryItem *item = [self updateCurrentPageViewController];
+
     [self addChildViewController:self.pageViewController];
     [self.pageViewController didMoveToParentViewController:self];
     [self.view addSubview:self.pageViewController.view];
@@ -205,6 +197,21 @@
     [self updateTitleForIndex:self.pageIndex];
 }
 
+- (void)reloadCurrentPageViewController {
+    [self updateCurrentPageViewController];
+}
+
+- (MHGalleryItem *)updateCurrentPageViewController {
+    MHGalleryItem *item = [self itemForIndex:self.pageIndex];
+
+    MHImageViewController *imageViewController =[MHImageViewController imageViewControllerForMHMediaItem:item viewController:self];
+    imageViewController.pageIndex = self.pageIndex;
+    [self.pageViewController setViewControllers:@[imageViewController]
+                                      direction:UIPageViewControllerNavigationDirectionForward
+                                       animated:NO
+                                     completion:nil];
+    return item;
+}
 
 -(void)enableOrDisbaleBarbButtons{
     
