@@ -1392,42 +1392,45 @@
     MHStatusBar().alpha =alpha;
 }
 
--(void)handelImageTap:(UIGestureRecognizer *)gestureRecognizer{
-    if (!self.viewController.isHiddingToolBarAndNavigationBar) {
-        if ([gestureRecognizer respondsToSelector:@selector(locationInView:)]) {
-            CGPoint tappedLocation = [gestureRecognizer locationInView:self.view];
-            if (CGRectContainsPoint(self.moviePlayerToolBarTop.frame, tappedLocation)) {
-                return;
-            }
-        }
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            
-            if (self.moviePlayerToolBarTop) {
-                self.moviePlayerToolBarTop.alpha =0;
-            }
-            [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarHidden];
-        } completion:^(BOOL finished) {
-            
-            self.viewController.hiddingToolBarAndNavigationBar = YES;
-            self.navigationController.navigationBar.hidden  =YES;
-            self.viewController.toolbar.hidden =YES;
-        }];
-    }else{
-        self.navigationController.navigationBar.hidden = NO;
-        self.viewController.toolbar.hidden = NO;
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarShown];
-            if (self.moviePlayerToolBarTop) {
-                if (self.item.galleryType == MHGalleryTypeVideo) {
-                    self.moviePlayerToolBarTop.alpha =1;
+-(void)handelImageTap:(UIGestureRecognizer *)gestureRecognizer {
+    if (!self.viewController.galleryViewController.UICustomization.showOverView) {
+        [self.viewController donePressed];
+    } else {
+        if (!self.viewController.isHiddingToolBarAndNavigationBar) {
+            if ([gestureRecognizer respondsToSelector:@selector(locationInView:)]) {
+                CGPoint tappedLocation = [gestureRecognizer locationInView:self.view];
+                if (CGRectContainsPoint(self.moviePlayerToolBarTop.frame, tappedLocation)) {
+                    return;
                 }
             }
-        } completion:^(BOOL finished) {
-            self.viewController.hiddingToolBarAndNavigationBar = NO;
-        }];
-        
+
+            [UIView animateWithDuration:0.3 animations:^{
+
+                if (self.moviePlayerToolBarTop) {
+                    self.moviePlayerToolBarTop.alpha = 0;
+                }
+                [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarHidden];
+            }                completion:^(BOOL finished) {
+
+                self.viewController.hiddingToolBarAndNavigationBar = YES;
+                self.navigationController.navigationBar.hidden = YES;
+                self.viewController.toolbar.hidden = YES;
+            }];
+        } else {
+            self.navigationController.navigationBar.hidden = NO;
+            self.viewController.toolbar.hidden = NO;
+
+            [UIView animateWithDuration:0.3 animations:^{
+                [self changeUIForViewMode:MHGalleryViewModeImageViewerNavigationBarShown];
+                if (self.moviePlayerToolBarTop) {
+                    if (self.item.galleryType == MHGalleryTypeVideo) {
+                        self.moviePlayerToolBarTop.alpha = 1;
+                    }
+                }
+            }                completion:^(BOOL finished) {
+                self.viewController.hiddingToolBarAndNavigationBar = NO;
+            }];
+        }
     }
 }
 
