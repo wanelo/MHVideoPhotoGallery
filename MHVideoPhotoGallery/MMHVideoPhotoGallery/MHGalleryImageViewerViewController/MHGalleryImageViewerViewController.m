@@ -20,6 +20,7 @@
 @property (nonatomic, strong) UIBarButtonItem          *leftBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *rightBarButton;
 @property (nonatomic, strong) UIBarButtonItem          *playStopBarButton;
+@property (nonatomic, strong) UILabel                  *countLabel;
 @end
 
 @implementation MHGalleryImageViewerViewController
@@ -193,12 +194,31 @@
     
     [(UIScrollView*)self.pageViewController.view.subviews[0] setDelegate:self];
     [(UIGestureRecognizer*)[[self.pageViewController.view.subviews[0] gestureRecognizers] firstObject] setDelegate:self];
+    self.countLabel = [self setupCountLabel];
     
     [self updateTitleForIndex:self.pageIndex];
 }
 
+- (UILabel *)setupCountLabel {
+    UILabel *label = [UILabel new];
+    label.numberOfLines = 1;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    [self.view addSubview:label];
+    return label;
+}
+
 - (void)reloadCurrentPageViewController {
     [self updateCurrentPageViewController];
+}
+
+- (void)viewDidLayoutSubviews {
+    [self.countLabel sizeToFit];
+    CGRect frame = self.countLabel.frame;
+    frame.origin.x = 0;
+    frame.origin.y = 30;
+    frame.size.width = CGRectGetWidth(self.view.frame);
+    self.countLabel.frame = frame;
 }
 
 - (MHGalleryItem *)updateCurrentPageViewController {
@@ -346,7 +366,9 @@
 
 -(void)updateTitleForIndex:(NSInteger)pageIndex{
     NSString *localizedString  = MHGalleryLocalizedString(@"imagedetail.title.current");
-    self.navigationItem.title = [NSString stringWithFormat:localizedString,@(pageIndex+1),@(self.numberOfGalleryItems)];
+    NSString *titleString = [NSString stringWithFormat:localizedString,@(pageIndex+1),@(self.numberOfGalleryItems)];
+    self.navigationItem.title = titleString;
+    self.countLabel.text = titleString;
 }
 
 
