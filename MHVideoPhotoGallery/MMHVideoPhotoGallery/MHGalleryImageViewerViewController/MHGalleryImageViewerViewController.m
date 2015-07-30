@@ -899,11 +899,16 @@
             
             
             [self.imageView setImageForMHGalleryItem:self.item imageType:MHImageTypeFull successBlock:^(UIImage *image, NSError *error) {
+                BOOL isEmptyImage = !weakSelf.item.image && !weakSelf.item.URLString;
                 if (!image) {
                     weakSelf.scrollView.maximumZoomScale  =1;
-                    [weakSelf changeToErrorImage];
+                    if (!isEmptyImage) {
+                        [weakSelf changeToErrorImage];
+                    }
                 }
-                [weakSelf.act stopAnimating];
+                if (!isEmptyImage) {
+                    [weakSelf.act stopAnimating];
+                }
             }];
             
         }else{
