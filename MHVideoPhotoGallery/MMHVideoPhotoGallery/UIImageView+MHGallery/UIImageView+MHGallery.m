@@ -37,41 +37,13 @@
 -(void)setImageForMHGalleryItem:(MHGalleryItem*)item
                       imageType:(MHImageType)imageType
                    successBlock:(void (^)(UIImage *image,NSError *error))succeedBlock{
-    
-    __weak typeof(self) weakSelf = self;
-    
-    if ([item.URLString rangeOfString:MHAssetLibrary].location != NSNotFound && item.URLString) {
-        
-        MHAssetImageType assetType = MHAssetImageTypeThumb;
-        if (imageType == MHImageTypeFull) {
-            assetType = MHAssetImageTypeFull;
-        }
-        
-        [MHGallerySharedManager.sharedManager getImageFromAssetLibrary:item.URLString
-                                                             assetType:assetType
-                                                          successBlock:^(UIImage *image, NSError *error) {
-                                                              [weakSelf setImageForImageView:image successBlock:succeedBlock];
-                                                          }];
-    }else if(item.image){
-        [self setImageForImageView:item.image successBlock:succeedBlock];
-    }else{
-        
-        NSString *placeholderURL = item.thumbnailURL;
-        NSString *toLoadURL = item.URLString;
-        
-        if (imageType == MHImageTypeThumb) {
-            toLoadURL = item.thumbnailURL;
-            placeholderURL = item.URLString;
-        }
-        
-        [self sd_setImageWithURL:[NSURL URLWithString:toLoadURL]
-                placeholderImage:[SDImageCache.sharedImageCache imageFromDiskCacheForKey:placeholderURL]
-                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                           if (succeedBlock) {
-                               succeedBlock (image,error);
-                           }
-                       }];
-    }
+    [self sd_setImageWithURL:[NSURL URLWithString:item.URLString]
+            placeholderImage:nil
+                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                       if (succeedBlock) {
+                           succeedBlock(image, error);
+                       }
+                   }];
 }
 
 
